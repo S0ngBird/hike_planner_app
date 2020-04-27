@@ -39,9 +39,7 @@ var HikePlannerApp = window.HikePlannerApp || {};
     function handleFormSubmit(event) {
         event.preventDefault();
         var trailName = document.getElementById("hikeLocationInput").value;
-        if (trailName === "Tuckerman's Ravine") {
-            var trailId = "7006930";
-        }
+        var trailId = getTrailId(trailName);
         var startDate = document.getElementById("hikeDateInput").value;
         planHike(trailId, startDate);
     }
@@ -52,4 +50,22 @@ var HikePlannerApp = window.HikePlannerApp || {};
         window.location.href = '/planner.html';
     }
 
+    // get the trail id
+    function getTrailId(trailName) {
+        switch (trailName) {
+            case "Tuckerman's Ravine":
+                return "7006930";
+            case "Mt. Chocorua":
+                return "7010621";
+            case "Mt. Kinsman":
+                return "7018513";
+            case "Mount Pemigewasset Trail":
+                return "7044100";
+        }
+    }
+
 }(jQuery));
+
+
+
+
