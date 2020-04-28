@@ -1,6 +1,7 @@
 /*global HikePlannerApp _config*/
 
 var HikePlannerApp = window.HikePlannerApp || {};
+var currentUser = window.currentUser || null;
 
 (function planScopeWrapper($) {
     var authToken;
@@ -24,7 +25,7 @@ var HikePlannerApp = window.HikePlannerApp || {};
             data: JSON.stringify({
                 StartDate: startDate,
                 TrailId: trailId,
-                Username: HikePlannerApp.currentUser.username
+                Username: currentUser.username
             }),
             contentType: 'application/json',
             success: formSubmitted

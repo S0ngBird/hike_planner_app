@@ -1,9 +1,10 @@
 /*global HikePlannerApp _config AmazonCognitoIdentity AWSCognito*/
 
 var HikePlannerApp = window.HikePlannerApp || {};
+var currentUser = window.currentUser || null;
 
 (function scopeWrapper($) {
-    var signinUrl = '/login.html';
+    var signinUrl = 'login.html';
 
     var poolData = {
         UserPoolId: _config.cognito.userPoolId,
@@ -13,6 +14,7 @@ var HikePlannerApp = window.HikePlannerApp || {};
     var userPool;
 
     userPool = new AmazonCognitoIdentity.CognitoUserPool(poolData);
+    currentUser = userPool.getCurrentUser();
 
     if (typeof AWSCognito !== 'undefined') {
         AWSCognito.config.region = _config.cognito.region;
@@ -20,6 +22,7 @@ var HikePlannerApp = window.HikePlannerApp || {};
 
     HikePlannerApp.signOut = function signOut() {
         userPool.getCurrentUser().signOut();
+        currentUser = null;
     };
 
     HikePlannerApp.authToken = new Promise(function fetchCurrentAuthToken(resolve, reject) {
@@ -40,7 +43,6 @@ var HikePlannerApp = window.HikePlannerApp || {};
         }
     });
 
-    HikePlannerApp.currentUser = userPool.getCurrentUser()
 
     /*
      * Cognito User Pool functions
@@ -116,6 +118,17 @@ var HikePlannerApp = window.HikePlannerApp || {};
         $('#signinForm').submit(handleSignin);
         $('#registrationForm').submit(handleRegister);
         $('#verifyForm').submit(handleVerify);
+        $('#logoutLink').click(HikePlannerApp.signOut);
+
+        if (currentUser) {
+            $('#registerLink').hide();
+            $('#loginLink').hide();
+            $('#logoutLink').show();
+        } else {
+            $('#registerLink').show();
+            $('#loginLink').show();
+            $('#logoutLink').hide();
+        }
     });
 
     function handleSignin(event) {
@@ -126,6 +139,7 @@ var HikePlannerApp = window.HikePlannerApp || {};
             function signinSuccess() {
                 console.log('Successfully Logged In');
                 alert("You're now logged in!");
+                currentUser = userPool.getCurrentUser();
                 window.location.href = 'planner.html';
             },
             function signinError(err) {
@@ -169,8 +183,8 @@ var HikePlannerApp = window.HikePlannerApp || {};
             function verifySuccess(result) {
                 console.log('call result: ' + result);
                 console.log('Successfully verified');
-                alert('Verification successful. You will now be redirected to the planner page.');
-                window.location.href = '/planner.html';
+                alert('Verification successful. You will now be redirected to the login page.');
+                window.location.href = 'login.html';
             },
             function verifyError(err) {
                 alert(err);
