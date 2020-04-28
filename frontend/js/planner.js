@@ -9,11 +9,11 @@ var currentUser = window.currentUser || null;
         if (token) {
             authToken = token;
         } else {
-            window.location.href = '/login.html';
+            window.location.href = 'login.html';
         }
     }).catch(function handleTokenError(error) {
         alert(error);
-        window.location.href = '/login.html';
+        window.location.href = 'login.html';
     });
     function planHike(trailId, startDate) {
         $.ajax({
@@ -28,7 +28,12 @@ var currentUser = window.currentUser || null;
                 Username: currentUser.username
             }),
             contentType: 'application/json',
-            success: formSubmitted
+            success: function(result) {
+                window.location.href = 'plansuccess.html';
+            },
+            error: function(xhr, result) {
+                window.location.href = 'plansuccess.html';
+            }
         });
     }
 
@@ -48,7 +53,7 @@ var currentUser = window.currentUser || null;
     // alert user of completion, reload the page
     function formSubmitted(event) {
         alert("Hike planned successfully! Check your email for plan details");
-        window.location.href = '/planner.html';
+        window.location.href = 'planner.html';
     }
 
     // get the trail id
